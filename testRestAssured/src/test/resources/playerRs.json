@@ -1,0 +1,14 @@
+{
+  "id": "1",
+  "country_id": null,
+  "timezone_id": null,
+  "username": "johndoe",
+  "email": "janedoe@example.com",
+  "name": "John",
+  "surname": "Doe",
+  "gender": null,
+  "phone_number": null,
+  "birthdate": null,
+  "bonuses_allowed": true,
+  "is_verified": false
+}
