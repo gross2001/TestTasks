@@ -12,11 +12,14 @@ import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.*;
+import java.util.concurrent.ThreadLocalRandom;
 
 import io.restassured.http.ContentType;
 import io.restassured.response.Response;
 import static io.restassured.RestAssured.*;
 import static io.restassured.module.jsv.JsonSchemaValidator.*;
+
+
 
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
 public class RestAssuredTest {
@@ -48,7 +51,7 @@ public class RestAssuredTest {
                 .contentType(ContentType.JSON)
                 .auth().preemptive().basic(testsProps.getProperty("username"), testsProps.getProperty("password"))
                         .body(tokenRqMap)
-                        .post("/v2/oauth2/token")
+                        .post(testsProps.getProperty("tokenRq"))
                         .then().extract().response();
 
         accessToken = response.jsonPath().getString("access_token");
@@ -65,6 +68,8 @@ public class RestAssuredTest {
         String randomUUID = UUID.randomUUID().toString();
         playerRq.setUsername(randomUUID);
         playerRq.setEmail(randomUUID + "@gmail.com");
+        playerRq.setPassword_change(Base64.getEncoder().encodeToString(randomUUID.substring(0, 16).getBytes()));
+        playerRq.setPassword_repeat(Base64.getEncoder().encodeToString(randomUUID.substring(0, 16).getBytes()));
 
         requestSpecification = given().auth().oauth2(accessToken)
                 .header("Accept", ContentType.JSON.getAcceptHeader())
@@ -72,7 +77,7 @@ public class RestAssuredTest {
 
         response = given(requestSpecification)
                 .body(playerRq)
-                .post("/v2/players")
+                .post(testsProps.getProperty("playerRq"))
                 .then().extract().response();
         playerRs = response.as(PlayerRs.class);
 
@@ -93,7 +98,7 @@ public class RestAssuredTest {
                 .contentType(ContentType.JSON)
                 .auth().preemptive().basic(testsProps.getProperty("username"), testsProps.getProperty("password"))
                 .body(resourseOwner)
-                .post("/v2/oauth2/token")
+                .post(testsProps.getProperty("tokenRq"))
                 .then().extract().response();
         accessToken = response.jsonPath().getString("access_token");
 
@@ -109,7 +114,7 @@ public class RestAssuredTest {
                 .contentType(ContentType.JSON);
 
         response = given(requestSpecification)
-                .get("/v2/players/" + playerRs.getId())
+                .get(testsProps.getProperty("playerRq") + "/" + playerRs.getId())
                 .then().extract().response();
 
         Assertions.assertEquals(200, response.statusCode());
@@ -124,8 +129,9 @@ public class RestAssuredTest {
                 .header("Accept", ContentType.JSON.getAcceptHeader())
                 .contentType(ContentType.JSON);
 
+        int randomNum = ThreadLocalRandom.current().nextInt(1, Integer.parseInt(playerRs.getId()) + 1);
         response = given(requestSpecification)
-                .get("/v2/players/" + "100")
+                .get(testsProps.getProperty("playerRq") + "/" + randomNum)
                 .then().extract().response();
 
         Assertions.assertEquals(404, response.statusCode());
