@@ -1,4 +1,4 @@
-package org.RestAssured.example;
+package org.RestAssured.example.model;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;

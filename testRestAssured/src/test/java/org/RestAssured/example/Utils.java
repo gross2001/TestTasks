@@ -1,6 +1,7 @@
 package org.RestAssured.example;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import org.RestAssured.example.model.PlayerRq;
 
 import java.io.File;
 import java.io.IOException;

@@ -5,11 +5,15 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="e4667f64-8cd2-4800-8cf3-8315363dc9af" name="Changes" comment="">
-      <change afterPath="$PROJECT_DIR$/src/test/java/org/RestAssured/example/Specifications.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/pom.xml" beforeDir="false" afterPath="$PROJECT_DIR$/pom.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/org/RestAssured/example/MainClass.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/test/java/org/RestAssured/example/PlayerRq.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/test/java/org/RestAssured/example/PlayerRq.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/.idea/uiDesigner.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/test/java/org/RestAssured/example/model/PlayerRs.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/test/resources/playerRsSchema.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/test/java/org/RestAssured/example/PlayerRq.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/test/java/org/RestAssured/example/model/PlayerRq.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/test/java/org/RestAssured/example/PlayerRs.java" beforeDir="false" />
       <change beforePath="$PROJECT_DIR$/src/test/java/org/RestAssured/example/RestAssuredTest.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/test/java/org/RestAssured/example/RestAssuredTest.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/test/java/org/RestAssured/example/Specifications.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/test/java/org/RestAssured/example/Specifications.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/test/java/org/RestAssured/example/Utils.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/test/java/org/RestAssured/example/Utils.java" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -46,6 +50,7 @@
   "keyToString": {
     "RunOnceActivity.OpenProjectViewOnStart": "true",
     "RunOnceActivity.ShowReadmeOnStart": "true",
+    "SHARE_PROJECT_CONFIGURATION_FILES": "true",
     "last_opened_file_path": "/home/gross/Projects/TestTasks/testRestAssured",
     "project.structure.last.edited": "Project",
     "project.structure.proportion": "0.0",
@@ -57,7 +62,7 @@
       <module name="testRestAssured" />
       <extension name="coverage">
         <pattern>
-          <option name="PATTERN" value="org.RestAssured.example.*" />
+          <option name="PATTERN" value="org.RestAssured.example.model.*" />
           <option name="ENABLED" value="true" />
         </pattern>
       </extension>

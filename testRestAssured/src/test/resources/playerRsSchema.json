@@ -1,0 +1,57 @@
+{
+  "$schema": "http://json-schema.org/draft-04/schema#",
+  "type": "object",
+  "properties": {
+    "id": {
+      "type": "integer",
+      "minimum": 0
+    },
+    "country_id": {
+      "type": ["integer", "null"]
+    },
+    "timezone_id": {
+      "type": ["integer", "null"]
+    },
+    "username": {
+      "type": "string"
+    },
+    "email": {
+      "type": "string"
+    },
+    "name": {
+      "type": ["string", "null"]
+    },
+    "surname": {
+      "type": ["string", "null"]
+    },
+    "gender": {
+      "type": ["string", "null"]
+    },
+    "phone_number": {
+      "type": ["string", "null"]
+    },
+    "birthdate": {
+      "type": ["string", "null"]
+    },
+    "bonuses_allowed": {
+      "type": "boolean"
+    },
+    "is_verified": {
+      "type": "boolean"
+    }
+  },
+  "required": [
+    "id",
+    "country_id",
+    "timezone_id",
+    "username",
+    "email",
+    "name",
+    "surname",
+    "gender",
+    "phone_number",
+    "birthdate",
+    "bonuses_allowed",
+    "is_verified"
+  ]
+}

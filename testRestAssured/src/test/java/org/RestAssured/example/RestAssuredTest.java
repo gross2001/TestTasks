@@ -1,5 +1,7 @@
 package org.RestAssured.example;
 
+import org.RestAssured.example.model.PlayerRq;
+import org.RestAssured.example.model.PlayerRs;
 import org.junit.jupiter.api.*;
 
 import java.io.FileInputStream;
@@ -12,16 +14,16 @@ import io.restassured.response.Response;
 import static io.restassured.RestAssured.*;
 import static io.restassured.module.jsv.JsonSchemaValidator.*;
 import static org.RestAssured.example.Specifications.*;
+
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
 public class RestAssuredTest {
 
     private static Properties testsProps;
-    private static PlayerRs playerRs;
-    private static Response response;
 
-    private static String accessToken;
+    private static int userId;
     private static String userName;
     private static String userPassword;
+    private static String accessToken;
 
     @BeforeAll
     public static void readProperties() {
@@ -44,11 +46,11 @@ public class RestAssuredTest {
     public void accessTokenRequest() {
         String username = testsProps.getProperty("username");
         String password = testsProps.getProperty("password");
-        installSpecs(requestBeforeAuthSpec(username, password), responseSpecOk200());
+        installSpecs(requestBeforeAuthSpec(username, password), responseSpec(200));
 
         Map<String, Object> tokenRqMap = Utils.readJSONFile("src/test/resources/TokenRq.json");
 
-        response = given()
+        Response response = given()
                         .body(tokenRqMap)
                         .post(testsProps.getProperty("tokenRq"))
                         .then().extract().response();
@@ -61,25 +63,22 @@ public class RestAssuredTest {
     @Order(2)
     public void registerNewPlayer() {
 
-        installSpecs(requestAuthSpec(accessToken), responseSpecOk201());
+        installSpecs(requestAuthSpec(accessToken), responseSpec(201));
 
-        userName = UUID.randomUUID().toString();
-        userPassword = Base64.getEncoder().encodeToString(userName.substring(0, 16).getBytes());
-        PlayerRq player = PlayerRq.builder()
-                .username(userName)
-                .email(userName + "@gmail.com")
-                .password_repeat(userPassword)
-                .password_change(userPassword)
-                .build();
+        PlayerRq player = DataGenerator.randomPlayerRq();
+        userName = player.getUsername();
+        userPassword = player.getPassword_change();
 
-        response = given()
+        Response response = given()
                 .body(player)
                 .post(testsProps.getProperty("playerRq"))
                 .then().extract().response();
-        playerRs = response.as(PlayerRs.class);
+
+        PlayerRs playerRs = response.as(PlayerRs.class);
+        userId = Integer.parseInt(playerRs.getId());
 
         response.then().assertThat().
-                body(matchesJsonSchemaInClasspath("playerRs.json"));
+                body(matchesJsonSchemaInClasspath("playerRsSchema.json"));
     }
 
     @Test
@@ -88,14 +87,14 @@ public class RestAssuredTest {
 
         String username = testsProps.getProperty("username");
         String password = testsProps.getProperty("password");
-        installSpecs(requestBeforeAuthSpec(username, password), responseSpecOk200());
+        installSpecs(requestBeforeAuthSpec(username, password), responseSpec(200));
 
         Map<String, Object> resourseOwner = Utils.readJSONFile("src/test/resources/resourseOwnerGrantRq.json");
 
         resourseOwner.put("username", userName);
         resourseOwner.put("password", userPassword);
 
-        response = given()
+        Response response = given()
                 .body(resourseOwner)
                 .post(testsProps.getProperty("tokenRq"))
                 .then().extract().response();
@@ -107,23 +106,23 @@ public class RestAssuredTest {
     @Test
     @Order(4)
     public void getSinglePlayerProfile() {
-        installSpecs(requestAuthSpec(accessToken), responseSpecOk200());
+        installSpecs(requestAuthSpec(accessToken), responseSpec(200));
 
-        response = given()
-                .get(testsProps.getProperty("playerRq") + "/" + playerRs.getId())
+        Response response = given()
+                .get(testsProps.getProperty("playerRq") + "/" + userId)
                 .then().extract().response();
 
         response.then().assertThat().
-                body(matchesJsonSchemaInClasspath("playerRs.json"));
+                body(matchesJsonSchemaInClasspath("playerRsSchema.json"));
     }
 
     @Test
     @Order(5)
     public void getAnotherPlayerProfile() {
-        installSpecs(requestAuthSpec(accessToken), responseSpecError404());
+        installSpecs(requestAuthSpec(accessToken), responseSpec(404));
 
-        int randomNum = ThreadLocalRandom.current().nextInt(1, Integer.parseInt(playerRs.getId()) + 1);
-        response = given(requestSpecification)
+        int randomNum = ThreadLocalRandom.current().nextInt(1, userId + 1);
+        Response response = given(requestSpecification)
                 .get(testsProps.getProperty("playerRq") + "/" + randomNum)
                 .then().extract().response();
     }
