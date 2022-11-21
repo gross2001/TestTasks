@@ -1,50 +1,41 @@
 package hellocucumber;
 
 import hellocucumber.pages.SignUpPage;
+import hellocucumber.pages.UsersPage;
+import hellocucumber.setup.Setup;
 import io.cucumber.java.ru.*;
-
 import org.junit.jupiter.api.Assertions;
-
-import org.openqa.selenium.By;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.support.PageFactory;
 
 import java.util.*;
+import java.util.stream.Collectors;
 
 public class StepDefinitions {
     private static SignUpPage signUpPage;
+    private static UsersPage usersPage;
+
+    public StepDefinitions() {
+        signUpPage = PageFactory.initElements(Setup.getDriver(), SignUpPage.class);
+        usersPage = PageFactory.initElements(Setup.getDriver(), UsersPage.class);
+    }
 
     @Дано("авторизоваться под стандартным именем и паролем")
     public void loginAsStandartUser() throws InterruptedException {
-
-        SignUpPage signUpPage = PageFactory.initElements(Setup.getDriver(), SignUpPage.class);
-
-        signUpPage.userName.sendKeys(Setup.getProps().getProperty("userName"));
-        signUpPage.password.sendKeys(Setup.getProps().getProperty("password"));
-        signUpPage.signUp.click();
+        signUpPage.loginAsStandartUser();
     }
 
     @Дано("нажать на ссылку {string}")
     public void goByLink(String link) throws InterruptedException {
-//        driver.findElement(By.partialLinkText(link)).click();
-        String updatelink = Setup.getDriver().findElement(By.partialLinkText(link)).getAttribute("href");
-        Setup.getDriver().get(updatelink);
+        signUpPage.goByLink(link);
     }
 
     @Тогда("проверить сортировку столбца {string}")
     public void checkColumn(String columnName) {
-        String xpath = "//table/tbody/tr/td[count(//table/thead/tr/th[.=\"" + columnName + "\"]/preceding-sibling::th)+1]";
-        List<WebElement> column = Setup.getDriver().findElements(By.xpath(xpath));
-        List<String>columnText = new ArrayList<String>();
-
-        for (WebElement element : column) {
-            columnText.add(element.getText());
-            System.out.println(element.getText());
-        }
-
-        List<String>sorted = new ArrayList<String>(columnText);
-        Collections.sort(sorted);
-
-        Assertions.assertIterableEquals(columnText, sorted);
+        List<WebElement> column = usersPage.findElements(columnName);
+        List<String> columnText = column.stream().map(webElement -> webElement.getText()).collect(Collectors.toList());
+        Assertions.assertTrue(
+                columnText.stream().sorted().collect(Collectors.toList()).equals(columnText)
+        );
     }
 }

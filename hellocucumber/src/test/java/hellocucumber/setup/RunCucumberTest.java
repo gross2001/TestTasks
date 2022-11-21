@@ -1,4 +1,4 @@
-package hellocucumber;
+package hellocucumber.setup;
 
 import org.junit.platform.suite.api.ConfigurationParameter;
 import org.junit.platform.suite.api.IncludeEngines;

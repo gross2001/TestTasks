@@ -1,8 +1,9 @@
-package hellocucumber;
+package hellocucumber.setup;
 
 import io.cucumber.java.After;
 import io.cucumber.java.Before;
 import io.cucumber.java.BeforeAll;
+import io.github.bonigarcia.wdm.WebDriverManager;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.chrome.ChromeDriver;
 import org.openqa.selenium.chrome.ChromeOptions;
@@ -15,23 +16,22 @@ import java.util.Properties;
 
 public class Setup {
 
-    static WebDriver driver;
+    private static WebDriver driver;
     private static Properties testsProps;
 
+   @BeforeAll
+    public static void setupClass() {
+       testsProps = readProps();
 
-    @BeforeAll
-    public static void readProps() {
-        testsProps = new Properties();
-        try (InputStream input = new FileInputStream("src/test/resources/tests.properties")) {
-            testsProps.load(input);
-        }  catch (IOException ex) {
-            ex.printStackTrace();
+        if (testsProps.get("webDriverManager").equals("true")) {
+            WebDriverManager.chromedriver().setup();
+        } else {
+            System.setProperty("webdriver.chrome.driver", testsProps.getProperty("webdriver.chrome.driver"));
         }
     }
 
     @Before
     public static void  startSession() {
-        System.setProperty("webdriver.chrome.driver", testsProps.getProperty("webdriver.chrome.driver"));
 
         ChromeOptions capabilities = new ChromeOptions();
         capabilities.setCapability("browserName", "chrome");
@@ -44,15 +44,25 @@ public class Setup {
     }
 
     @After
-    public static void endSession() {
+    public static void tearDown() {
         if (driver != null)
-            driver.close();
+            driver.quit();
     }
 
     public static WebDriver getDriver() {
         if (driver != null)
             return driver;
         return  null;
+    }
+
+    public static Properties readProps() {
+        Properties props = new Properties();
+        try (InputStream input = new FileInputStream("src/test/resources/tests.properties")) {
+            props.load(input);
+        }  catch (IOException ex) {
+            ex.printStackTrace();
+        }
+        return props;
     }
 
     public static Properties getProps() {

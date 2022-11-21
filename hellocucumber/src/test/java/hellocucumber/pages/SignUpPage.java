@@ -1,13 +1,11 @@
 package hellocucumber.pages;
 
+import hellocucumber.setup.Setup;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.support.FindBy;
-import org.openqa.selenium.support.PageFactory;
 
-public class SignUpPage {
-
-    private WebDriver driver;
+public class SignUpPage extends BasePage {
 
     @FindBy(id = "UserLogin_username")
     public WebElement userName;
@@ -18,9 +16,12 @@ public class SignUpPage {
     @FindBy(name = "yt0")
     public WebElement signUp;
 
-    public SignUpPage(WebDriver driver)
-    {
-        this.driver = driver;
-        PageFactory.initElements(driver, this);
+    public SignUpPage(WebDriver driver) {
+        super(driver);
+    }
+    public void loginAsStandartUser() throws InterruptedException {
+        userName.sendKeys(Setup.getProps().getProperty("userName"));
+        password.sendKeys(Setup.getProps().getProperty("password"));
+        signUp.click();
     }
 }
